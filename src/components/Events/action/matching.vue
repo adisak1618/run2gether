@@ -43,40 +43,17 @@
           </div>
         </div>
       </div>
-      <div id="abnormal" class="eight wide column">
+      <div id="abnormal" class="eight wide column clickable">
         <div class="ui cards">
-          <div v-for="runner in filter_abnormal(EventData.member)" class="ui fluid card">
-            <div class="content">
-              <div class="right floated meta">
-                <h3>{{runner.mem_age}}</h3>
-              </div>
-              <div class="header">{{runner.mem_name + '' + runner.mem_surname}}</div>
-              <div class="description">
-                <div class="ui two column relaxed grid">
-                  <div class="column">
-                    {{runner.mem_disabled_type ? runner.mem_disabled_type : 'ไม่มีรายละเอียด'}}<br/>
-                  </div>
-                  <div class="column">
-                    {{'ไซด์เสื้อ ' + runner.detail_size }}
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div v-for="runner in filter_abnormal(EventData.member)" @click="match(runner)" class="ui fluid card">
+            <item :data="runner"></item>
           </div>
         </div>
       </div>
-      <div id="normal" class="eight wide column">
+      <div id="normal" class="eight wide column clickable">
         <div class="ui cards">
-          <div v-for="runner in filter_normal(EventData.member)" @click="popup_match" class="ui fluid card">
-            <div class="content">
-              <div class="right floated meta">
-                <h3>{{runner.mem_age}}</h3>
-              </div>
-              <div class="header">{{runner.mem_name + '' + runner.mem_surname}}</div>
-              <div class="description">
-                {{'ไซด์เสื้อ ' + runner.detail_size }}
-              </div>
-            </div>
+          <div v-for="runner in filter_normal(EventData.member)" @click="match(runner)" class="ui fluid card">
+            <normal-item :data="runner"></normal-item>
           </div>
         </div>
       </div>
@@ -91,13 +68,16 @@
           จับคู่เลย
         </div>
         <div class="description center aligned">
-          Jamie vardy กับ Cristiano Ronaldo
+
+          <p v-for="item in Match_data">
+            {{ item.mem_name + " " + item.mem_surname }}
+          </p>
         </div>
       </div>
       <div class="extra content">
         <div class="ui two buttons">
-          <div @click="popup_match" class="ui basic green button">Approve</div>
-          <div @click="popup_match" class="ui basic red button">Decline</div>
+          <div @click="matching" class="ui basic green button">Approve</div>
+          <div @click="reset" class="ui basic red button">Decline</div>
         </div>
       </div>
     </div>
@@ -119,16 +99,27 @@
 </template>
 
 <script>
+import * as action from './../../../actions/event'
+import Item from './match_item/item.vue'
+import Normal_Item from './match_item/normal_item.vue'
 export default {
+  components: {
+    'item': Item,
+    'normal-item': Normal_Item
+  },
   data: function () {
     return {
+      popup: false,
+      match_message: ""
     }
   },
   vuex: {
     getters: {
       EventData: state => state.CurentEvent,
-      ActivityData: state => state.activityData
-    }
+      ActivityData: state => state.activityData,
+      Match_data: state => state.match
+    },
+    actions: action
   },
   computed: {},
   ready: function () {
@@ -140,40 +131,63 @@ export default {
   attached: function () {
   },
   methods: {
-    filter_normal: (data) => {
+    matching () {
+      this.matcingRunner(this.$route.params.id)
+    },
+    match (runner) {
+      this.appendMatch(runner)
+      if (this.Match_data.length > 1) {
+        console.log(this.popup)
+        if (!this.popup) {
+          this.popup_match()
+        }
+        this.popup = true
+      } else {
+        if (this.popup) {
+          this.popup_match()
+        }
+        this.popup = false
+      }
+    },
+    reset () {
+      this.resetMatch()
+      this.popup = false
+      this.popup_match()
+    },
+    filter_normal (data) {
       if (data instanceof Array) {
         return data.filter(item => {
           console.log('RETURN LIST OF NORMAL PEOPLE THAT NOT MATCH YET');
-          return item.mem_type === 'normal' && item.detail_match === 'active'
+          return item.mem_type === 'normal' && item.detail_match !== 'active'
         })
       } else {
         alert('Respone from server went wrong try to refresh');
         return []
       }
     },
-    filter_abnormal: (data) => {
+    filter_abnormal (data) {
       if (data instanceof Array){
         return data.filter(item => {
           console.log('RETURN LIST OF NORMAL PEOPLE THAT NOT MATCH YET');
-          return item.mem_type === 'disabled' && item.detail_match === 'active'
+          return item.mem_type === 'disabled' && item.detail_match !== 'active'
         })
       } else {
         alert('Respone from server went wrong try to refresh');
         return []
       }
     },
-    popup_match: () => {
+    popup_match () {
       $('#match_button')
       .transition('fly up')
     },
-    modal: () => {
+    modal () {
       $('.ui.modal.matching').modal('show')
     },
-    close: () => {
+    close () {
       $('.ui.modal.matching').modal('show')
       console.log('close')
     },
-    confirm_paid: (id) => {
+    confirm_paid (id) {
       $('.ui.basic.confirm_paid')
       .modal({
         closable  : false,
@@ -186,12 +200,11 @@ export default {
       })
       .modal('show')
     },
-    matching_detail: (id) => {
+    matching_detail (id) {
       $('.ui.modal.detail')
       .modal('show')
     }
-  },
-  components: {}
+  }
 }
 </script>
 
@@ -204,8 +217,12 @@ export default {
   #match_button{
     position: fixed;
     bottom: 10px;
-    width: 100%;
-    left: 0px;
+    left: 50%;
+    width: 300px;
+    margin-left: -150px;
     z-index: 999;
+  }
+  .clickable {
+    cursor: pointer;
   }
 </style>

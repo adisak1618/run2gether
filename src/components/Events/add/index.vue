@@ -74,7 +74,7 @@
               <div class="field">
                 <label>เพศ</label>
                 <div class="ui selection dropdown">
-                  <input v-model="regis.mem_gender" type="hidden" name="mem_gender" name="mem_surname">
+                  <input v-model="regis.mem_gender" type="hidden" name="mem_gender">
                   <i class="dropdown icon"></i>
                   <div class="default text">Gender</div>
                   <div class="menu">
@@ -96,10 +96,38 @@
             <label>รายละเอียด</label>
             <textarea v-model="regis.mem_discription" name="mem_discription" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 65px;"></textarea>
           </div>
-          <div class="field">
-            <label>สังกัด</label>
-            <input v-model="regis.mem_department" type="text" name="mem_department">
+          <div class="ui three column grid">
+            <div class="column">
+              <div class="field">
+                <label>สังกัด</label>
+                <input v-model="regis.mem_department" type="text" name="mem_department">
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label>ไซด์เสื้อ</label>
+                <div class="ui selection dropdown">
+                  <input v-model="regis.detail_size" type="hidden" name="detail_size">
+                  <i class="dropdown icon"></i>
+                  <div class="default text">ไซด์เสื้อ</div>
+                  <div class="menu">
+                    <div class="item" data-value="S">S</div>
+                    <div class="item" data-value="M">M</div>
+                    <div class="item" data-value="L">L</div>
+                    <div class="item" data-value="XL">XL</div>
+                    <div class="item" data-value="XXL">XXL</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="field">
+                <label>ราคา</label>
+                <input v-model="regis.detail_price" type="text" name="detail_price">
+              </div>
+            </div>
           </div>
+          <br/>
           <!-- <button @click="add_member($route.params.id, regis, addMember)" class="green ui button right big">เพิ่ม</button> -->
           <button class="ui teal button" type="submit">Submit</button>
           <div class="ui error message"></div>
@@ -124,6 +152,7 @@ export default {
         mem_gender: "m",
         mem_age: "0",
         mem_email: "",
+        mem_location: "60/5",
         mem_tel: "",
         mem_date: "",
         mem_pic: "",
@@ -131,7 +160,9 @@ export default {
         mem_department: "",
         mem_type: "normal",
         mem_disabled_type: 0,
-        event_id:0
+        event_id:0,
+        detail_size: "M",
+        detail_price: 200
       }
     }
   },
@@ -160,7 +191,7 @@ export default {
         event.preventDefault();
         if ($(".ui.form").form('is valid')) {
 
-          that.add_member(that.$route.params.id, that.regis, that.addMember)
+          that.add_member(that.$route, that.regis, that.addMember)
         }
       }
     })
@@ -184,6 +215,15 @@ export default {
             {
               type   : 'empty',
               prompt : 'โปรดระบุบัตรประจำตัวประชาชน'
+            }
+          ]
+        },
+        mem_id_num: {
+          identifier  : 'mem_id_num',
+          rules: [
+            {
+              type   : 'number',
+              prompt : 'โปรดระบุบัตรประจำตัวประชาชนเป็นตัวเลข'
             }
           ]
         },
@@ -223,12 +263,30 @@ export default {
             }
           ]
         },
+        mem_age: {
+          identifier  : 'mem_age',
+          rules: [
+            {
+              type   : 'number',
+              prompt : 'โปรดระบุอายเป็นตัวเลขุ'
+            }
+          ]
+        },
         mem_email: {
           identifier  : 'mem_email',
           rules: [
             {
               type   : 'empty',
               prompt : 'โปรดระบุอีเมล'
+            }
+          ]
+        },
+        mem_email: {
+          identifier  : 'mem_email',
+          rules: [
+            {
+              type   : 'email',
+              prompt : 'โปรดระบุอีเมลให้ถูกต้อง'
             }
           ]
         },
@@ -255,21 +313,21 @@ export default {
     //Validate form
   },
   methods: {
-    add_member: (eventid, regisdata, addMember) => {
-      console.log(eventid)
+    add_member: (route, regisdata, addMember) => {
+      console.log(route.params.id)
       console.log(JSON.stringify(regisdata))
       var date = new Date()
       regisdata.mem_date = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate()
       if (regisdata.mem_disabled_type === 0) {
-        alert(0)
+        // alert(0)
         regisdata.mem_type = 'normal'
       } else {
         regisdata.mem_type = 'disabled'
       }
-      regisdata.event_id = eventid
+      regisdata.event_id = route.params.id
       console.log('REGIS DATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
       console.log(regisdata)
-      addMember(regisdata)
+      addMember(regisdata, route)
     }
   }
 }

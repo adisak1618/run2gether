@@ -5,25 +5,27 @@ export const changeTab = (store, tab) => {
 // row setup
 // contentType: "application/json; charset=utf-8",
 // dataType: "json",
-export const addMember = (store, data) => {
-  //alert('hi')
+export const addMember = (store, data, route) => {
+  console.log('CHECK DATA');
+  console.log(JSON.stringify(data))
   $.ajax({
     type: 'POST',
     url: BASE_URL + '/members',
     data: JSON.stringify(data),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-  }).success((data, e, status) => {
-    if (status.status === 200) {
-      console.log('Add MEMBER')
-      alert('ADD MEMBER SUCCESS')
-      console.log(data)
-      //store.dispatch('SET_EVENTS', data)
-      return true
-    } else {
-      return false
-    }
+  }).done(function() {
+    console.log('DONE!')
   })
+  .fail(function(data, e, status) {
+    console.log(e)
+  })
+  .always(function(data) {
+    console.log( "complete" )
+    console.log(data)
+    console.log(route)
+    route.router.go('/event/'+route.params.id)
+  });
 }
 
 export const getEvent = (store) => {
@@ -77,4 +79,42 @@ export const getMemberInEvent = (store, id) => {
       return false
     }
   })
+}
+
+export const appendMatch = (store, data) => {
+  store.dispatch('APPEND_MATCH', data)
+}
+
+export const resetMatch = (store) => {
+  store.dispatch('RESET_MATCH')
+}
+
+export const matcingRunner = (store, id) => {
+  var match_data = []
+  if (store.state.match instanceof Array) {
+    match_data = store.state.match.map(item => item.mem_id)
+    console.log(match_data)
+  } else {
+    alert('Data is not array');
+    return false
+  }
+
+  $.ajax({
+    type: 'POST',
+    url: BASE_URL + '/match',
+    data: JSON.stringify({"mem_id": match_data, "event_id": id}),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+  }).done(function() {
+    console.log('DONE!')
+  })
+  .fail(function(data, e, status) {
+    console.log('fail')
+  })
+  .always(function(data) {
+    console.log( "complete" )
+    console.log(data)
+    store.dispatch('RESET_MATCH')
+    route.router.go('/event/'+route.params.id+'/match')
+  });
 }

@@ -18,3 +18,11 @@ export const SET_EVENT_MEMBER = (state, member) => {
     alert('Respone went wrong');
   }
 }
+
+export const APPEND_MATCH = (state, data) => {
+  state.match.push(data)
+}
+
+export const RESET_MATCH = (state) => {
+  state.match = []
+}

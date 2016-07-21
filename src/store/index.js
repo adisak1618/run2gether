@@ -57,6 +57,7 @@ const state = {
       'createDate': '12-12-2015'
     }
   ],
+  match: [],
   activityData: {
     curentTab: 0,
     data: []

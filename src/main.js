@@ -9,7 +9,7 @@ import applyEventFrom from './components/apply/apply'
 import Add from './components/Add/index'
 import EventDetail from './components/Events/detail'
 import addMember from './components/Events/add/index'
-import { sync } from 'vuex-router-sync'
+// import { sync } from 'vuex-router-sync'
 import store from './store/index'
 import '../node_modules/semantic-ui/dist/semantic.min.css'
 import semantic from 'semantic'
@@ -28,7 +28,7 @@ Vue.use(VueRouter)
 // define some components
 
 var router = new VueRouter()
-sync(store, router)
+// sync(store, router)
 
 // define some routes.
 // each route should map to a component.
