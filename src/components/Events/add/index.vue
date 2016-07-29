@@ -1,6 +1,7 @@
 <template>
   <div class="ui container">
       <br/><br/>
+      {{EventData.event_optional | json}}
       <div class="ui padded segment">
         <div class="header">
           <h1 style='text-align:center'>เพิ่มนักวิ่ง (สำหรับแอดมิน)</h1><br/>
@@ -92,10 +93,6 @@
             </div>
           </div>
           <br/>
-          <div class="field">
-            <label>รายละเอียด</label>
-            <textarea v-model="regis.mem_discription" name="mem_discription" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 65px;"></textarea>
-          </div>
           <div class="ui three column grid">
             <div class="column">
               <div class="field">
@@ -127,6 +124,12 @@
               </div>
             </div>
           </div>
+          <h3>ข้อมูลเพิ่มเติม</h3>
+          <div class="field" v-for="item in optional_list">
+            <label v-model="mem_discription[$index].title">{{item}} {{$index}}</label>
+            <input type="hidden" value={{item}} v-model="regis.mem_discription[$index].title">
+            <input type="text" name="optional" v-model="regis.mem_discription[$index].description">
+          </div>
           <br/>
           <!-- <button @click="add_member($route.params.id, regis, addMember)" class="green ui button right big">เพิ่ม</button> -->
           <button class="ui teal button" type="submit">Submit</button>
@@ -156,22 +159,51 @@ export default {
         mem_tel: "",
         mem_date: "",
         mem_pic: "",
-        mem_discription: "",
+        mem_discription: [],
         mem_department: "",
         mem_type: "normal",
         mem_disabled_type: 0,
         event_id:0,
         detail_size: "M",
         detail_price: 200
-      }
+      },
+      optional_list: [],
+      optional_data: []
     }
   },
   vuex: {
     getters: {
+      EventData: state => state.CurentEvent
     },
     actions: Object.assign({}, actions)
   },
+  watch: {
+    'EventData': {
+      handler: function (data, olddata) {
+        if (this.EventData.data.event_optional) {
+          this.optional_list = String(this.EventData.data.event_optional).split(",")
+          console.log('SPRITE DATA')
+          console.log(this.optional_list)
+        }
+      },
+      deep: true
+    }
+  },
   ready () {
+    console.log('ROUTE')
+    console.log(this.$route)
+    console.log(this.EventData.data.event_optional)
+    this.getCurrentEventDetail(this.$route.params.id)
+
+    console.log('show me')
+    var that = this
+
+    if (this.EventData.data.event_optional) {
+      this.optional_list = String(this.EventData.data.event_optional).split(",")
+      console.log('SPRITE DATA')
+      console.log(String(this.EventData.data.event_optional).split(","))
+    }
+
     $('.dropdown')
     .dropdown({
       maxSelections: 11
@@ -200,6 +232,15 @@ export default {
       {
       on: 'blur',
       fields: {
+        optional: {
+          identifier  : 'optional',
+          rules: [
+            {
+              type   : 'empty',
+              prompt : 'โปรดระบุข้อมูล'
+            }
+          ]
+        },
         mem_name: {
           identifier  : 'mem_name',
           rules: [
@@ -313,7 +354,7 @@ export default {
     //Validate form
   },
   methods: {
-    add_member: (route, regisdata, addMember) => {
+    add_member (route, regisdata, addMember) {
       console.log(route.params.id)
       console.log(JSON.stringify(regisdata))
       var date = new Date()
@@ -325,9 +366,12 @@ export default {
         regisdata.mem_type = 'disabled'
       }
       regisdata.event_id = route.params.id
+      regisdata.mem_discription = JSON.stringify(regisdata.mem_discription)
+
       console.log('REGIS DATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
       console.log(regisdata)
       addMember(regisdata, route)
+      //this.regis.mem_discription = []
     }
   }
 }

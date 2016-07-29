@@ -20,6 +20,7 @@ module.exports = {
       'assets': path.resolve(__dirname, '../src/assets'),
       'components': path.resolve(__dirname, '../src/components'),
       'semantic': path.resolve(__dirname, '../node_modules/semantic-ui/dist/semantic.min.js')
+
     }
   },
   resolveLoader: {

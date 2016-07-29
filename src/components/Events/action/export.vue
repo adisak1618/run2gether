@@ -20,23 +20,30 @@
           <label></label>
         </div>
       </div>
-      <div class="item menu" style="width:70%">
+      <div class="item menu" style="width:55%">
         <div class="ui transparent icon input">
           <input type="text" placeholder="Search..." v-model="filter.text">
           <i class="search link icon"></i>
         </div>
       </div>
+      <div class="item menu center aligned" style="width:15%">
+        <div class="ui green button">
+          Download Now
+        </div>
+        <a download="somedata.csv" href="#" onclick="return ExcellentExport.csv(this, 'exportdata');">Export to CSV</a>
+      </div>
     </div>
-    <table class="ui very basic celled table">
+    <table id="exportdata" class="ui very basic celled table">
       <thead>
         <tr>
-        <th class="ten wide">ชื่อ</th>
+        <th class="five wide">ชื่อ</th>
+        <th class="five wide">ชื่อ</th>
         <th class="two wide center aligned">สถานะการโอนเงิน</th>
         <th class="two wide center aligned">อายุ</th>
         <th class="two wide center aligned">สถานะการจับคู่</th>
       </tr></thead>
       <tbody>
-        <tr v-for="runner in FilterData(EventData.member, 'all', filter.type, filter.reverse, filter.text, 'Matched')">
+        <tr v-for="runner in FilterData(EventData.member, 'all', filter.type, filter.reverse, filter.text, 'all')">
           <td>
             <h4 class="ui image header">
               <div class="content membername" @click="memberDetial(runner)">
@@ -106,6 +113,7 @@
 
 <script>
 import * as sort from './../../../actions/sort'
+import './excellentexport.min'
 export default {
   data: function () {
     return {

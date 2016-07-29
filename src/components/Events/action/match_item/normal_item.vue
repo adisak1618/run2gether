@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="content" v-bind:class="{ 'match_active': active}" @click="itemActive()">
+  <div class="content" v-bind:class="{ 'match_active': active}" @click="itemActive(data)">
     <div class="right floated meta">
       <h3>{{data.mem_age}}</h3>
     </div>
@@ -23,6 +23,11 @@ export default {
   computed: {},
   methods: {
     itemActive (data) {
+      if (this.active) {
+        this.removeMatch(data.mem_id)
+      } else {
+        this.appendMatch(data)
+      }
       this.active = this.active ? false : true
     },
     resetifnull (data) {

@@ -8,6 +8,7 @@ export const changeTab = (store, tab) => {
 export const addMember = (store, data, route) => {
   console.log('CHECK DATA');
   console.log(JSON.stringify(data))
+  alert('added')
   $.ajax({
     type: 'POST',
     url: BASE_URL + '/members',
@@ -25,7 +26,28 @@ export const addMember = (store, data, route) => {
     console.log(data)
     console.log(route)
     route.router.go('/event/'+route.params.id)
-  });
+  })
+}
+
+export const addEvent = (store, data) => {
+  $.ajax({
+    type: 'POST',
+    url: BASE_URL + '/event',
+    data: JSON.stringify(data),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+  }).done(function() {
+    console.log('DONE!')
+  })
+  .fail(function(data, e, status) {
+    console.log(e)
+  })
+  .always(function(data) {
+    console.log( "complete" )
+    console.log(data)
+    console.log(route)
+    //route.router.go('/event/'+route.params.id)
+  })
 }
 
 export const getEvent = (store) => {
@@ -52,7 +74,7 @@ export const getCurrentEventDetail = (store, id) => {
     if (status.status === 200) {
       console.log('GET SINGLE EVENT BY ID')
       console.log(data)
-      setCurrentEventDetail(store, data[0].event_name, data[0].event_id, data[0].event_price)
+      setCurrentEventDetail(store, data[0].event_name, data[0].event_id, data[0].event_price, data[0])
       return true
     } else {
       return false
@@ -60,8 +82,8 @@ export const getCurrentEventDetail = (store, id) => {
   })
 }
 
-export const setCurrentEventDetail = (store, name, id, price) => {
-  store.dispatch('SET_EVENT_DETAIL', name, id, price)
+export const setCurrentEventDetail = (store, name, id, price, data) => {
+  store.dispatch('SET_EVENT_DETAIL', name, id, price, data)
   getMemberInEvent(store, id)
 }
 
@@ -115,6 +137,11 @@ export const matcingRunner = (store, id) => {
     console.log( "complete" )
     console.log(data)
     store.dispatch('RESET_MATCH')
+    getCurrentEventDetail(store, id)
     route.router.go('/event/'+route.params.id+'/match')
   });
+}
+
+export const removeMatch = (store, id) => {
+  store.dispatch('REMOVE_MATCH', id)
 }

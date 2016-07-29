@@ -44,6 +44,11 @@ export default {
   },
   methods: {
     itemActive (data) {
+      if (this.active) {
+        this.removeMatch(data.mem_id)
+      } else {
+        this.appendMatch(data)
+      }
       this.active = this.active ? false : true
     },
     resetifnull (data) {

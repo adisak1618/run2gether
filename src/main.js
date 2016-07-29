@@ -13,14 +13,15 @@ import addMember from './components/Events/add/index'
 import store from './store/index'
 import '../node_modules/semantic-ui/dist/semantic.min.css'
 import semantic from 'semantic'
-
-
 // Sub Route Event
-
+import Export_Event from './components/Events/action/export'
 import Member_Event from './components/Events/action/member'
 import Match_Event from './components/Events/action/matching'
 import Payment_Event from './components/Events/action/payment'
 import Success_Event from './components/Events/action/success'
+
+// TEST
+import S3 from './components/Add/s3'
 /* eslint-disable no-new */
 console.log('semantic')
 console.log(semantic)
@@ -39,7 +40,11 @@ router.map({
     auth: false,
     admin_menu: true
   },
-
+  '/s3': {
+    component: S3,
+    auth: false,
+    admin_menu: true
+  },
   '/login': {
     component: Login,
     auth: false,
@@ -82,6 +87,11 @@ router.map({
       },
       '/success': {
         component: Success_Event,
+        auth: true,
+        admin_menu: true
+      },
+      '/export': {
+        component: Export_Event,
         auth: true,
         admin_menu: true
       }

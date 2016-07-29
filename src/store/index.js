@@ -35,6 +35,7 @@ const state = {
     event_name: 'Unknow',
     event_id: -1,
     event_price: -1,
+    data: {},
     member: []
   },
   Event: [

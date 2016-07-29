@@ -28,7 +28,7 @@
           <button v-link="{ path: '/event/' + $route.params.id + '/add'}" class="ui primary button">
             เพิ่มผู้สมัคร
           </button>
-          <button class="ui green button">
+          <button class="ui green button" v-link="{ path: '/event/' + $route.params.id + '/export', activeClass: 'active'}">
             Export
           </button>
         </div>
@@ -159,6 +159,7 @@ export default {
   },
   ready () {
     console.log('ROUTE DETAIL ')
+    console.log(this.EventData.event_optional)
     console.log(this.$route)
     this.getCurrentEventDetail(this.$route.params.id)
   },
