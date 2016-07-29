@@ -12,7 +12,7 @@
 import store from './store/index'
 import { login, LoginSuccess, LoginFail } from './actions/authen'
 import Hello from './components/Hello'
-import Menu from './components/Menu/index'
+import Menu from './components/menu/index'
 
 export default {
   components: {
