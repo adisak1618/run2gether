@@ -23,8 +23,8 @@ export default {
     console.log('AWS')
     console.log(AWS)
     var creds = {
-          'accessKeyId': 'AKIAIAEW3CPYLSPKAXQQ',
-          'secretAccessKey': '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'
+          'accessKeyId': 'Put tour ket here',
+          'secretAccessKey': 'Put tour ket here'
         }
     AWS.config.update(creds)
     AWS.config.region = 'ap-southeast-1'
